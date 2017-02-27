@@ -68,8 +68,8 @@ for(p = 3:length(fpr1subFolders))% don't need to skip the first one
         %}
         
     end
-    savename=sprintf('D:\\exp5\\data\\%s\\%s_xfp',prefix,prefix);
-    save(savename,'xfpdata');
+    %savename=sprintf('D:\\exp5\\data\\%s\\%s_xfp',prefix,prefix);
+    %save(savename,'xfpdata');
     pos=0;
     while (size(cell2mat(struct2cell(xfpdata(pos+1).centroid)),1)==0)
         pos=pos+1;

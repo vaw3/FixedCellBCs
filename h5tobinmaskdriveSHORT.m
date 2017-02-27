@@ -15,7 +15,7 @@ function h5tobinmaskdriveSHORT
     processedir = 'D:\exp5\processed_pos';
     %exp5dir= 'C:\Users\svetsa\Desktop\experiment5\masks_tif\registered_tifs'; 
     exp5dir= 'D:\exp5\Multi'; 
-    bwmask = 'D:\exp5\bwmask'
+    bwmask = 'D:\exp5\bwmask';
     fpr1subFolders= getSubFolders(fpr1dir);
     %fpr1subFolders = fpr1subFolders(2:2:length(fpr1subFolders));%getSubFolders 
     %also reads in files inside the sub folders and so to get rid of those I do this step

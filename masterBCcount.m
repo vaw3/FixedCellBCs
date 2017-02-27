@@ -57,6 +57,8 @@ for(p = 1:length(fpr1subFolders))% don't need to skip the first one
         getrawimg(pos,xfpdata, new_mask);
                
     end
+    savename=sprintf('D:\\exp5\\data\\%s\\%s_xfp',prefix,prefix);
+    save(savename,'xfpdata');
     
 end
 end
