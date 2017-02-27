@@ -18,7 +18,7 @@ fpr1subFolders = fpr1subFolders(2:end);
 [procsubFolders] = getSubFolders(processedir);%gets the file path of the sub folders and the folder being search
 exp5FolderNames = getSubFolders(exp5dir);
 
-for(p = 3:length(fpr1subFolders))% don't need to skip the first one
+for(p = 1:length(fpr1subFolders))% don't need to skip the first one
     %for this cell array because the first is the not the same as the
     %parent folder
     fpr1subFoldersDir = readAndorDirectory(strcat(fpr1dir,'\',fpr1subFolders{p}));%gets directory for that

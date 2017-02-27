@@ -30,9 +30,9 @@ for(p = 1:length(fpr1subFolders))% don't need to skip the first one
         prefix = fliplr(strtok(fliplr(fliplr(strtok(fliplr(fpr1subFolders{p}), '\'))),'_'));%gets the for eg., "D4MTSR_FPR1mask" from the whole file name
         mfile = sprintf('%s\\%s_m%04d.tif',strcat(fpr1dir,'\',fpr1subFolders{p}),fpr1subFolders{p}, pos);% gets the h5 file probability file
         mask=imread(mfile);
-        exp5FolderNames{p+1}
-        procsubFolders{p+1}
-        fpr1subFoldersDir
+        exp5FolderNames{p+1};
+        procsubFolders{p+1};
+        fpr1subFoldersDir;
         ff{1} = readAndorDirectory(exp5FolderNames{p+1});
         imfile = getAndorFileName(ff{1}(1), pos, [], [], []);
         info = imfinfo(imfile);
@@ -54,13 +54,59 @@ for(p = 1:length(fpr1subFolders))% don't need to skip the first one
         xfpdata(pos+1).r2= regionprops(cc3, imageStack(:,:,7), 'MeanIntensity');
         xfpdata(pos+1).fr1= regionprops(cc3, imageStack(:,:,4), 'MeanIntensity');
         xfpdata(pos+1).fr2= regionprops(cc3, imageStack(:,:,8), 'MeanIntensity');
+  
+        %%
+         for ii=1:size(xfpdata(pos+1).r1,1)
+             pos
+                 if(cell2mat(struct2cell(xfpdata(pos+1).cfp(ii)))>700&&cell2mat(struct2cell(xfpdata(pos+1).cfp(ii)))>850)
+                     xfpdata(pos+1).xfpcode(ii,1)={'CY'};
+                 elseif(cell2mat(struct2cell(xfpdata(pos+1).cfp(ii)))>700)
+                         xfpdata(pos+1).xfpcode(ii,1)={'C'};
+                 elseif(cell2mat(struct2cell(xfpdata(pos+1).yfp(ii)))>850)
+                         xfpdata(pos+1).xfpcode(ii,1)={'Y'};
+                 else
+                     xfpdata(pos+1).xfpcode(ii,1)={'X'};
+                 end
+                 
+                 if(cell2mat(struct2cell(xfpdata(pos+1).r1(ii)))>730&&...
+                         cell2mat(struct2cell(xfpdata(pos+1).fr1(ii)))>810&&...
+                     cell2mat(struct2cell(xfpdata(pos+1).fr2(ii)))>810)
+                     xfpdata(pos+1).rnacode(ii,1)={'134'};
+                 elseif(cell2mat(struct2cell(xfpdata(pos+1).r1(ii)))>730&&...
+                         cell2mat(struct2cell(xfpdata(pos+1).fr1(ii)))>810)
+                     xfpdata(pos+1).rnacode(ii,1)={'13'};
+                 elseif(cell2mat(struct2cell(xfpdata(pos+1).r1(ii)))>730&&...
+                         cell2mat(struct2cell(xfpdata(pos+1).fr2(ii)))>810)
+                     xfpdata(pos+1).rnacode(ii,1)={'14'};
+                 elseif(cell2mat(struct2cell(xfpdata(pos+1).fr1(ii)))>810&&...
+                         cell2mat(struct2cell(xfpdata(pos+1).fr2(ii)))>810)
+                     xfpdata(pos+1).rnacode(ii,1)={'34'};
+                 elseif(cell2mat(struct2cell(xfpdata(pos+1).r1(ii)))>730)
+                     xfpdata(pos+1).rnacode(ii,1)={'1'};
+                 elseif(cell2mat(struct2cell(xfpdata(pos+1).fr1(ii)))>810)
+                     xfpdata(pos+1).rnacode(ii,1)={'3'};
+                 elseif(cell2mat(struct2cell(xfpdata(pos+1).fr2(ii)))>810)
+                     xfpdata(pos+1).rnacode(ii,1)={'4'};
+                 else
+                     xfpdata(pos+1).rnacode(ii,1)={'0'};
+                 end
+        
+                         
+           
+         end
+        %{
+        if (size(cell2mat(struct2cell(xfpdata(pos+1).centroid)),2)<3)
+        continue
+        end
         getrawimg(pos,xfpdata, new_mask);
-               
+        figsave=sprintf('D:\\exp5\\data\\%s\\%s_%02d.jpeg',prefix,prefix,pos);
+        saveas(gcf,figsave);       
+         %}
     end
     savename=sprintf('D:\\exp5\\data\\%s\\%s_xfp',prefix,prefix);
     save(savename,'xfpdata');
+   end
     
-end
 end
 
     
@@ -93,7 +139,7 @@ end
                 struct2cell(xfpdata(pos+1).r2(ii)) struct2cell(xfpdata(pos+1).fr2(ii))];
            
         end
-       imshow(new_mask, [])
-       text(d(:,1)-20,d(:,2), text_str(:,1) ,'Color','red','FontSize',6)
-       text(d(:,1)+10,d(:,2), text_str(:,2) ,'Color','red','FontSize',6)
+       imshow(new_mask, []);
+       text(d(:,1)-20,d(:,2), text_str(:,1) ,'Color','red','FontSize',6);
+       text(d(:,1)+30,d(:,2), text_str(:,2) ,'Color','red','FontSize',6);
  end
