@@ -4,8 +4,13 @@
 function h5tobinmaskdriveSHORT
     %Rename them these files up until the \experiment5 to fit your
     %computer's directory
-    persistent count;
-    count=1;
+    
+    global csim;
+    global ysim;
+    global misaligned;
+    misaligned=0;
+    
+       
     %You must create the processed subfolders yourself for the code to work
     
     %fpr1dir = 'C:\Users\svetsa\Desktop\experiment5\masks_tif\FPR1Masks';
@@ -31,9 +36,10 @@ function h5tobinmaskdriveSHORT
     [procsubFolders] = getSubFolders(processedir);%gets the file path of the sub folders and the folder being search
     exp5FolderNames = getSubFolders(exp5dir);
     
-    for(p = 5:length(fpr1subFolders))% don't need to skip the first one
+    for(p = 1:(length(fpr1subFolders)-1))% don't need to skip the first one
     %for this cell array because the first is the not the same as the
     %parent folder
+   
     fpr1subFoldersDir = readAndorDirectory(strcat(fpr1dir,'\',fpr1subFolders{p}));%gets directory for that 
         for(pos = 0:length(fpr1subFoldersDir.m)-1)
             prefix = fliplr(strtok(fliplr(fliplr(strtok(fliplr(fpr1subFolders{p}), '\'))),'_'));%gets the for eg., "D4MTSR_FPR1mask" from the whole file name
@@ -42,12 +48,12 @@ function h5tobinmaskdriveSHORT
             exp5FolderNames{p+1}
             procsubFolders{p+1}
             fpr1subFoldersDir
-            h5tobinmaskFILE(h5file, pos, 2, 1, exp5FolderNames{p+1}, procsubFolders{p+1}, fpr1subFoldersDir);
+            h5tobinmaskFILE(h5file, pos, 2, 1, exp5FolderNames{p+1}, procsubFolders{p+1}, fpr1subFoldersDir,p);
             
         end 
         
-    end 
-  
+     end 
+  save('D:\exp5\aligned','misaligned')
 end
 %% Gets File names in directory
 function listOfFolderNames = getSubFolders(dir1)
@@ -67,7 +73,7 @@ function listOfFolderNames = getSubFolders(dir1)
 end
 
 %%
-function h5tobinmaskFILE(filename,pos,label, tpt, exp5BMdir, processedir, fpr1cleandir)
+function h5tobinmaskFILE(filename,pos,label, tpt, exp5BMdir, processedir, fpr1cleandir,sampct)
     % for identifying what are artifacts
     roundStdThres = 19;%the margin of standard deviation before and after hybridization nuc 1 and 3 and nuc 2 and 4 pictures to identify artifacts
     overallStdThres = 50; % the margin of standard deviation before and after hybridization nuc 1,2,3,4 pictures to identify artifacts
@@ -138,16 +144,18 @@ This finds the artifacts
     
         %%
         %I check for alignment 
-        ct=0;
-        if(passThres(ccshedcc, 1, 5, imageStack, CFPThres, pos)&& pos<80)
-              %{
-             ct=ct+1
-                fname = strcat(processedir, '\Pos_',num2str(pos), 'BM.tif');
-                imwrite(wshedcc,char(strcat(processedir, '\Pos_',num2str(pos), 'BM.tif')), 'Compression', 'none');
-                %copyfile(getAndorFileName(fpr1cleandir, pos, [],[],[]),processedir); % moves the files from the FPR1 Mask folder to the Processed Files Folder
-  %}
-      end
-      
+        global misaligned
+        if(passThres(1, 5, imageStack, pos))
+            misaligned(pos+1,sampct)=1;
+        else
+            misaligned(pos+1,sampct)=0;
+           
+            %fname = strcat(processedir, '\Pos_',num2str(pos), 'BM.tif');
+            %imwrite(wshedcc,char(strcat(processedir, '\Pos_',num2str(pos), 'BM.tif')), 'Compression', 'none');
+            %copyfile(getAndorFileName(fpr1cleandir, pos, [],[],[]),processedir); % moves the files from the FPR1 Mask folder to the Processed Files Folder
+            
+        end
+        
 end
 %% Runtime functions
 function [wshedcc, titleBW] = makemask(filename,pos, label, tpt)
@@ -156,7 +164,7 @@ function [wshedcc, titleBW] = makemask(filename,pos, label, tpt)
     shortform = filename;
     
     titleBW = BWname(shortform, pos,tpt,'','_BI.tiff');%name of the file
-    io2DirtRemoved = bwareaopen(io2, 1000);% gets rid of small things the program classified as 
+    io2DirtRemoved = bwareaopen(io2, 100);% gets rid of small things the program classified as 
     io2MoreFilled = io2DirtRemoved;
     io2MoreFilled = imfill(io2DirtRemoved, 'holes');
     cc = bwconncomp(io2MoreFilled);
@@ -164,7 +172,7 @@ function [wshedcc, titleBW] = makemask(filename,pos, label, tpt)
     wshedcc = watershedSegmentation(filename, io2MoreFilled);
 end
 %%
-function [registeredCleanly] = passThres(ccshedcc, c1, c2, imageStack, thres, pos);
+function [registeredCleanly] = passThres( c1, c2, imageStack, pos);
   %{  
       meaninten1 = cell2mat(struct2cell(regionprops(ccshedcc, imageStack(:,:,c1) , 'MeanIntensity')))
      meaninten2 = cell2mat(struct2cell(regionprops(ccshedcc, imageStack(:,:,c2) , 'MeanIntensity')))
@@ -175,7 +183,7 @@ function [registeredCleanly] = passThres(ccshedcc, c1, c2, imageStack, thres, po
          registeredCleanly = true;
      end  
      
-     %}
+     
 ans1=regionprops(ccshedcc, imageStack(:,:,c1), 'MeanIntensity');
 ans2=regionprops(ccshedcc, imageStack(:,:,c2), 'MeanIntensity');
 ans3=regionprops(ccshedcc, imageStack(:,:,c1+1), 'MeanIntensity');
@@ -190,12 +198,23 @@ diff=diff.^(0.5);
 diff2=g3-g4;
 diff2=diff2.^2;
 diff2=diff2.^(0.5);
+%}
+global csim;
+global ysim;
+csim(pos+1)=ssim(imageStack(:,:,c1), imageStack(:,:,c2),'Exponents',[0,0,2]);
+ysim(pos+1)=ssim(imageStack(:,:,c1+1), imageStack(:,:,c2+1),'Exponents',[0,0,2]);
 my_cell = sprintf(char(65));
+my_cell2 = sprintf(char(66));
 my_cell = strcat(my_cell,num2str(pos+1));
-xlswrite('d4mtsrtestcfp.xlsx',diff,1,my_cell);
-xlswrite('d4mtsrtestyfp.xlsx',diff2,1,my_cell);
+my_cell2 = strcat(my_cell2,num2str(pos+1));
+%xlswrite('d4bmp.xlsx',csim(pos+1),1,my_cell);
+%xlswrite('d4bmp.xlsx',ysim(pos+1),1,my_cell2);
+if csim(pos+1)<0.034 && ysim(pos+1)<0.034
 registeredCleanly = true;
-pos
+else
+    registeredCleanly = false;
+end
+
 end
 %%
 function [MeanIntensities, centroids] =intensityforAllChannels(imageStack, ccshedcc)
@@ -245,7 +264,7 @@ function [mask2] = watershedSegmentation(mask_path, mask)
     if ~exist('mask', 'var')
         disp('bbob')
         mask = readmaskfilesKM({mask_path}, 2);
-        mask = bwareaopen(mask, 1000);
+        mask = bwareaopen(mask, 100);
     end
     %% Find the fused nuclei in the mask and put it into a new mask file
     cc = bwconncomp(mask);
@@ -258,6 +277,9 @@ function [mask2] = watershedSegmentation(mask_path, mask)
     fusedMask(sublist) = 1;
     %% Erode the fused mask to find the centers of the nuclei to be segmented
     s = round(1.2*sqrt(mean(area))/pi);
+    if isnan(s)
+        return;
+    end
     nucmin = imerode(fusedMask,strel('disk',s));
     %% Find the area considered to be the background of the fused mask
     outside = ~imdilate(fusedMask,strel('disk',1));
