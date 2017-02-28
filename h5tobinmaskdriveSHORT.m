@@ -53,7 +53,7 @@ function h5tobinmaskdriveSHORT
         end 
         
      end 
-  save('D:\exp5\aligned','misaligned')
+  save('D:\exp5\misaligned','misaligned')
 end
 %% Gets File names in directory
 function listOfFolderNames = getSubFolders(dir1)
