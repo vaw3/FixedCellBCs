@@ -21,12 +21,16 @@ fpr1subFolders = fpr1subFolders(2:end);
 %]
 [procsubFolders] = getSubFolders(processedir);%gets the file path of the sub folders and the folder being search
 exp5FolderNames = getSubFolders(exp5dir);
-
-for(p = 1:length(fpr1subFolders))% don't need to skip the first one
+ load('D:\exp5\aligned');
+for(p = 4:length(fpr1subFolders))% don't need to skip the first one
     %for this cell array because the first is the not the same as the
     %parent folder
+   
     fpr1subFoldersDir = readAndorDirectory(strcat(fpr1dir,'\',fpr1subFolders{p}));%gets directory for that
     for(pos = 0:length(fpr1subFoldersDir.m)-1)
+        if(misaligned(pos+1,p)==1)
+            continue
+        end
         prefix = fliplr(strtok(fliplr(fliplr(strtok(fliplr(fpr1subFolders{p}), '\'))),'_'));%gets the for eg., "D4MTSR_FPR1mask" from the whole file name
         mfile = sprintf('%s\\%s_m%04d.tif',strcat(fpr1dir,'\',fpr1subFolders{p}),fpr1subFolders{p}, pos);% gets the h5 file probability file
         mask=imread(mfile);
