@@ -9,8 +9,7 @@ function h5tobinmaskdriveSHORT
     global ysim;
     global misaligned;
     misaligned=0;
-    
-       
+   
     %You must create the processed subfolders yourself for the code to work
     
     %fpr1dir = 'C:\Users\svetsa\Desktop\experiment5\masks_tif\FPR1Masks';

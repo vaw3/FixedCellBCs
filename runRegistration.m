@@ -21,20 +21,45 @@ numberOfFolders = length(listOfFolderNames);
 sn = numberOfFolders - 2; % sn = no. of samples
 %}
 %%
-ff = readAndorDirectory('D:\exp5\masks_tif\Experiment5Control');% i made a file in my matlab folder that contains all the masks
-ffhyb = readAndorDirectory('D:\exp5\masks_tif\Experiment5ControlHyb2');
+dim=input('Enter image side length  ')       
+ff = readAndorDirectory('D:\exp5\masks_tif\D2BMP');% i made a file in my matlab folder that contains all the masks
+ffhyb = readAndorDirectory('D:\exp5\masks_tif\D2BMPHyb2');
 fnm=strcat(dir1,'Multi\',ff.prefix);
 fnc=strcat(dir1,'Composite\',ff.prefix);
 mkdir(fnm)
 mkdir(fnc)
-for pos =0:1:8
+disp=[-(dim+1) -dim -(dim-1);-1 0 1;(dim-1) dim (dim+1)];
+mapclean=repmat(-1,3,3);
+%% The else-if statements within the for loop generate the mapclean matrix that has -1 value for invalid 
+%positions and 0 or positive values for the valid positions to be stitched.
+for pos =0:1:((dim*dim)-1)       
     %disp(int2str(pos));
-    
-    for ww = 0:2 %loop over channels CHANGE FOR CONTROL
+    map=disp+pos;
+    if (pos==0)
+        mapclean(2:3,2:3)=map(2:3,2:3);        
+    elseif(pos==dim*dim-1)
+        mapclean(1:3,1:2)=map(1:2,1:2);
+    elseif(pos==dim-1)
+        mapclean(2:3,1:2)=map(2:3,1:2);
+    elseif(pos==dim*(dim-1))
+        mapclean(1:2,2:3)=map(1:2,2:3);
+    elseif(pos<dim)
+        mapclean(2:3,1:3)=map(2:3,1:3);
+    elseif(mod(pos,dim)==0)
+        mapclean(1:3,2:3)=map(1:3,2:3);
+    elseif(mod((pos+1),dim)==0)
+        mapclean(1:3,1:2)=map(1:3,1:2);
+    elseif(pos>=dim*(dim-1))
+        mapclean(1:3,1:2)=map(1:2,1:3);
+    end
+        
+        
+            
+    for ww = 0:3 %loop over channels CHANGE FOR CONTROL
         img1(:,:,ww+1) = imread(getAndorFileName(ff(1),pos,0,0,ww));
         img2(:,:,ww+1) = imread(getAndorFileName(ffhyb(1),pos,0,0,ww));
     end
-    [img_stack, row_s, col_s] = registerTwoImages(img1,img2,1); %or the other way
+    [img_stack, row_s, col_s] = registerTwoImages(img2,img1,1); %or the other way
     if(row_s<0||col_s<0)
         [img_stack, row_s, col_s] = registerTwoImages(img1,img2,1);
     end
@@ -59,16 +84,12 @@ for pos =0:1:8
     if(row_s<0||col_s<0)
         %disp('pos')
         %pos
-        row_s = abs(row_s)
-            col_s = abs(col_s)
+        row_s = abs(row_s);
+            col_s = abs(col_s);
     end
     row_s = row_s+1;
     col_s = col_s+1;
-    %size(img_stack)
-    %3 16 52 61 62
-    %writeMultichannel(img_stack, ['BIG ASS Multi Channel for Pos_',num2str(pos),'.tif']);
-    
-    %disp([int2str(row_s) '   ' int2str(col_s)]);
+  
      
     intersect_img = img_stack(row_s:(end-row_s), col_s:(end-col_s), :);% gets the union of the two registered images
     file1 = sprintf('%s_m%04d', ff.prefix,pos);
@@ -78,7 +99,7 @@ for pos =0:1:8
     end
     writeMultichannel(intersect_img, ['D:\exp5\Multi\',ff.prefix,'\',file1,'.tif']); % writes file to multichannel
     %writeMultichannel(intersect_img, fnm);
-    size(intersect_img)
+    size(intersect_img);
      C = intersect_img(:,:,1);% sets a matrix to the first channel of the multichannel file
    % for a = 2:2
     %    C = imfuse(C, intersect_img(:,:,a));% uses the command imfuse to concatentate the next channel to variable C
