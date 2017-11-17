@@ -5,10 +5,6 @@ function h5tobinmaskdriveSHORT
     %Rename them these files up until the \experiment5 to fit your
     %computer's directory
     
-    global csim;
-    global ysim;
-    global misaligned;
-    misaligned=0;
    
     %You must create the processed subfolders yourself for the code to work
     
@@ -43,7 +39,7 @@ function h5tobinmaskdriveSHORT
         for(pos = 0:length(fpr1subFoldersDir.m)-1)
             prefix = fliplr(strtok(fliplr(fliplr(strtok(fliplr(fpr1subFolders{p}), '\'))),'_'));%gets the for eg., "D4MTSR_FPR1mask" from the whole file name
            
-            h5file = sprintf('%s\\%s_m%04d.h5',strcat(ildir,'\',fpr1subFolders{p}),fpr1subFolders{p}, pos);% gets the h5 file probability file
+            h5file = sprintf('%s\\%s_f%04d.h5',strcat(ildir,'\',fpr1subFolders{p}),fpr1subFolders{p}, pos);% gets the h5 file probability file
             exp5FolderNames{p+1}
             procsubFolders{p+1}
             fpr1subFoldersDir
@@ -89,72 +85,6 @@ function h5tobinmaskFILE(filename,pos,label, tpt, exp5BMdir, processedir, fpr1cl
     fn1 = sprintf('%s_m%04d', fpr1cleandir.prefix,pos);
     imwrite(ccshedcc, ['D:\exp5\bwmask\',fpr1cleandir.prefix,'\',fn1,'.tif'],'Compression','none');
     
-%%
-    % gets the different channels of the registered tif file and stores
-    % them in a multidimensional array
-    ff{1} = readAndorDirectory(exp5BMdir);
-    mask = getAndorFileName(ff{1}(1), pos, [], [], []);
-    info = imfinfo(mask);
-    imageStack = [];
-    numberOfImages = length(info);
-    for k = 1:numberOfImages
-        currentImage = imread(mask, k, 'Info', info);
-        imageStack(:,:,k) = currentImage;
-    end
-%%
-    % return the mean intensities in an array for each of the channels of
-    % in the image stack
-   % [MeanIntensities, centroids] = intensityforAllChannels(imageStack, ccshedcc);
- %   Areas = cell2mat(struct2cell(regionprops(ccshedcc, 'Area')));
-    %%
-    %{
-This finds the artifacts
-    artifacts = [];
-        for(j = 1:size(MeanIntensities, 2))% iterate through the columns
-            eccen = cell2mat(struct2cell(regionprops(ccshedcc, 'Eccentricity'))); % holds the values of how much each object looks like a line 
-            if(std(MeanIntensities([1 2], j))<roundStdThres&&std(MeanIntensities([3 4], j))<roundStdThres); % this was found to be the most effective way of removing foreign objects
-                if(Areas(j)<=circleAreaThres) % the areas of the artifacts must be smaller than the threshold
-                    artifacts= [artifacts j];% stores the index of the artifacts so they can be later removed
-                end
-            else if(eccen(j)>eccenThres&&(centroids(j,1)>.1*size(ccshedcc, 1))&&(centroids(j,1)<.9*size(ccshedcc, 1))&&(centroids(j,2)>.1*size(ccshedcc, 2))&&(centroids(j,2)<.9*size(ccshedcc, 2)))%gets 
-                    %rid of half moon shaped objects becuase those are most 
-                    %likely the partial recognition of the artifacts but we
-                    %had to be careful of real cells cut off by the
-                    %registration along the border so objects near the
-                    %border were not considered
-                    
-                    if(Areas(j)<=circleAreaThres)
-                         artifacts= [artifacts j];
-                    end      
-            end
-            end
-        end
-        %% 
-        %this piece of code gets all those artifact objects and gets the
-        %rectangle box that encompasses them and sets that equal to zero so
-        %they don't show up in the processed image
-        boundbox = struct2cell(regionprops(ccshedcc, 'BoundingBox'));
-        for(i = artifacts)
-            hold on;
-            rect = floor(boundbox{i})+1;
-            wshedcc([rect(2):(rect(2)+rect(4))],[rect(1): (rect(1)+rect(3))]) = 0;
-        end
-    %}
-    
-        %%
-        %I check for alignment 
-        global misaligned
-        if(passThres(1, 5, imageStack, pos))
-            misaligned(pos+1,sampct)=1;
-        else
-            misaligned(pos+1,sampct)=0;
-           
-            %fname = strcat(processedir, '\Pos_',num2str(pos), 'BM.tif');
-            %imwrite(wshedcc,char(strcat(processedir, '\Pos_',num2str(pos), 'BM.tif')), 'Compression', 'none');
-            %copyfile(getAndorFileName(fpr1cleandir, pos, [],[],[]),processedir); % moves the files from the FPR1 Mask folder to the Processed Files Folder
-            
-        end
-        
 end
 %% Runtime functions
 function [wshedcc, titleBW] = makemask(filename,pos, label, tpt)
@@ -169,60 +99,6 @@ function [wshedcc, titleBW] = makemask(filename,pos, label, tpt)
     cc = bwconncomp(io2MoreFilled);
     lbio2MoreFilled = bwlabel(io2MoreFilled);
     wshedcc = watershedSegmentation(filename, io2MoreFilled);
-end
-%%
-function [registeredCleanly] = passThres( c1, c2, imageStack, pos);
-  %{  
-      meaninten1 = cell2mat(struct2cell(regionprops(ccshedcc, imageStack(:,:,c1) , 'MeanIntensity')))
-     meaninten2 = cell2mat(struct2cell(regionprops(ccshedcc, imageStack(:,:,c2) , 'MeanIntensity')))
-     
-     if(mean(meaninten1)<thres||mean(meaninten2)<thres) % if mean of the mean intensities is lower than the threshold, then the file was not registered properly
-         registeredCleanly = false;
-     else
-         registeredCleanly = true;
-     end  
-     
-     
-ans1=regionprops(ccshedcc, imageStack(:,:,c1), 'MeanIntensity');
-ans2=regionprops(ccshedcc, imageStack(:,:,c2), 'MeanIntensity');
-ans3=regionprops(ccshedcc, imageStack(:,:,c1+1), 'MeanIntensity');
-ans4=regionprops(ccshedcc, imageStack(:,:,c2+1), 'MeanIntensity');
-g1=cell2mat(struct2cell(ans1));
-g2=cell2mat(struct2cell(ans2));
-g3=cell2mat(struct2cell(ans3));
-g4=cell2mat(struct2cell(ans4));
-diff=g1-g2;
-diff=diff.^2;
-diff=diff.^(0.5);
-diff2=g3-g4;
-diff2=diff2.^2;
-diff2=diff2.^(0.5);
-%}
-global csim;
-global ysim;
-csim(pos+1)=ssim(imageStack(:,:,c1), imageStack(:,:,c2),'Exponents',[0,0,2]);
-ysim(pos+1)=ssim(imageStack(:,:,c1+1), imageStack(:,:,c2+1),'Exponents',[0,0,2]);
-my_cell = sprintf(char(65));
-my_cell2 = sprintf(char(66));
-my_cell = strcat(my_cell,num2str(pos+1));
-my_cell2 = strcat(my_cell2,num2str(pos+1));
-%xlswrite('d4bmp.xlsx',csim(pos+1),1,my_cell);
-%xlswrite('d4bmp.xlsx',ysim(pos+1),1,my_cell2);
-if csim(pos+1)<0.034 && ysim(pos+1)<0.034
-registeredCleanly = true;
-else
-    registeredCleanly = false;
-end
-
-end
-%%
-function [MeanIntensities, centroids] =intensityforAllChannels(imageStack, ccshedcc)
-    MeanIntensities = [];
-    for(chan  =1:size(imageStack,3))
-        hold on;
-        meaninten = cell2mat(struct2cell(regionprops(ccshedcc, imageStack(:,:,chan) , 'MeanIntensity')));
-        MeanIntensities = [MeanIntensities;meaninten]; %adds the mean intensity list to the matrix
-    end
 end
 %%
 function [fname] =BWname (fileloc, pos, t, chan, filetype)
