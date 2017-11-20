@@ -1,6 +1,6 @@
 clear all
 path=pwd;
-% mergeMultipleMontageDirectories({'ControlR1'},{'ControlR1'},[3 3],3,'control1');
+mergeMultipleMontageDirectories({'ControlR1'},{'ControlR1'},[3 3],3,'control1');
 mergeMultipleMontageDirectories({'ControlR2'},{'ControlR2'},[3 3],3,'control2');
 mkdir('ctrlmasks');
 mkdir('mergectrl');
@@ -27,6 +27,7 @@ end
 end
 
 %%
+path=pwd;
 mpath=[path,'\ctrlmasks\'];
 ct=1;
 for ii=1:2
