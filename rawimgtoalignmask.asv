@@ -22,7 +22,7 @@ for i=1:1:numel(dir('testout'))-2
     fimg=[pwd fimg];
     imwrite(d,fimg);
 end
-%% Post ILASTIK Section makes binary masks
+%% Section makes binary masks
 mkdir('masks');
 for pos=1:1:numel(dir('Ilastik'))-2
 h5file = sprintf('nuclear_f%04d.h5',pos);
@@ -43,9 +43,8 @@ function h5tobinmaskFILE(filename,pos,label,tpt)
     [wshedcc] = makemask({filename}, pos, label, tpt); % gets binary mask
     
     ccshedcc = wshedcc;%bwconncomp(wshedcc); % bwconncomp was not working so I am not using it
-    fn1 = sprintf('\\masks\\mask_f%04d.tif',pos);
-    fn1=[pwd fn1];
-    imwrite(ccshedcc, fn1);
+    fn1 = sprintf('mask_f%04d',pos);
+    imwrite(ccshedcc, ['E:\BrendanTut\Trial_1_9_29_2917\masks\',fn1,'.tif'],'Compression','none');
     
 end
 
