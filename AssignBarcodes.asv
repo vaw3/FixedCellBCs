@@ -73,8 +73,8 @@ end
         if (size(cell2mat(struct2cell(xfpdata(p).centroid)),2)<3)
         continue
         end
+        getrawimg(p,xfpdata);
         posstr=sprintf('%04d.tif',p);
-        getrawimg(posstr,xfpdata);
         fn1=[filesep,'lineageimg',filesep,'lineageimg_',posstr];
         fn1=[pwd fn1];
         saveas(gcf,fn1);       
@@ -91,8 +91,8 @@ end
         for ii=1:size(xfpdata(p).r1,1)
                  text_str{ii,1} = xfpdata(p).fid(ii,:);           
         end
-        fn1=[filesep,'masks',filesep,'mask_',posstr];
-        fn1=[pwd fn1];
+       fn1 = sprintf('\\masks\\mask_f%04d.tif',p);
+       fn1=[pwd fn1];
        a=imread(fn1);
        imshow(a)
        text(d(:,1)-20,d(:,2), text_str(:,1) ,'Color','cyan','FontSize',6);

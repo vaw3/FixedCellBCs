@@ -1,20 +1,21 @@
 clear all
 path=pwd;
-mergeMultipleMontageDirectories({'ControlR1'},{'ControlR1'},[3 3],3,'control1');
-mergeMultipleMontageDirectories({'ControlR2'},{'ControlR2'},[3 3],3,'control2');
+% mergeMultipleMontageDirectories({'ControlR1'},{'ControlR1'},[3 3],3,'control1');
+% mergeMultipleMontageDirectories({'ControlR2'},{'ControlR2'},[3 3],3,'control2');
 mkdir('ctrlmasks');
 mkdir('mergectrl');
 for ii=1:2
 for i=1:1:numel(dir('control1'))-2
-    FileTif=sprintf('\\control%d\\merge_f%04d.tif',ii,i);
-    FileTif=[pwd FileTif];
+    foldertif=sprintf('control%d',ii);
+    filetif=sprintf('merge_f%04d.tif',i);
+    FileTif=fullfile(pwd,foldertif,filetif);
     InfoImage=imfinfo(FileTif);
     mImage=InfoImage(1).Width;
     nImage=InfoImage(1).Height;
     a=zeros(nImage,mImage,1,'uint16');
     a=imread(FileTif,'Index',1);
-    fctrl=sprintf('\\mergectrl\\ctrl_%d_f%04d.tif',ii,i);
-    fctrl=[pwd fctrl];
+    fctrl=sprintf('ctrl_%d_f%04d.tif',ii,i);
+    fctrl=fullfile(pwd,'mergectrl',fctrl);
     imwrite(a, fctrl);
 end
 end
@@ -28,11 +29,11 @@ end
 
 %%
 path=pwd;
-mpath=[path,'\ctrlmasks\'];
+mpath=[path,filesep,'ctrlmasks',filesep];
 ct=1;
 for ii=1:2
-    impath=sprintf('\\control%d\\',ii);
-    impath=[pwd, impath];
+    impath=sprintf('control%d',ii);
+    impath=fullfile(pwd, impath);
 for p = 1:numel(dir('control1'))-2% don't need to skip the first one
         imfn = sprintf('merge_f%04d.tif',p);
         mfn = sprintf('ctrlmask_%d_f%04d.tif',ii,p);
@@ -40,8 +41,11 @@ for p = 1:numel(dir('control1'))-2% don't need to skip the first one
         mfile = [mpath,mfn];
         info2 = imfinfo(imfile);
         imageStack = [];
+        s=strel('diamond',10);
         for k = 1:3
             currentImage = imread(imfile, k, 'Info', info2);
+            dampImg=imopen(currentImage,s);
+            currentImage=imsubtract(currentImage, dampImg);
             imageStack(:,:,k) = currentImage;
         end
         mask=imread(mfile);
@@ -88,7 +92,7 @@ function h5tobinmaskFILE(filename, ii, pos,label,tpt)
     
     ccshedcc = wshedcc;%bwconncomp(wshedcc); % bwconncomp was not working so I am not using it
     fn1 = sprintf('ctrlmask_%d_f%04d',ii,pos);
-    imwrite(ccshedcc, ['E:\BrendanTut\Trial_1_9_29_2917\ctrlmasks\',fn1,'.tif'],'Compression','none');
+    imwrite(ccshedcc, [pwd,filesep,'ctrlmasks',filesep,fn1,'.tif'],'Compression','none');
     
 end
 function [wshedcc] = makemask(filename, label, tpt)
@@ -117,7 +121,7 @@ function [io2, pnuc] = readmaskfilesKM(ilastikNucAll,lblN, tpt)
     
     ilastikfile=ilastikNucAll{1};
     p=pwd;
-    t=[p,'\ctrlIlastik\',ilastikfile];
+    t=[p,filesep,'ctrlIlastik',filesep,ilastikfile];
     io = h5read(t,'/exported_data');
     io = io(lblN,:,:,tpt);% make this into a variable ( which ilastik label to use as signal and which to use as background. the last dimension is time
     io1 = squeeze(io);

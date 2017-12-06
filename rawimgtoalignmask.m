@@ -4,8 +4,8 @@ mergeMultipleMontageDirectories({'BYR1','BYR2'},{'BYR3','BYR4'},[7 7],4,'testout
 %%
 mkdir('mergenuclear')
 for i=1:1:numel(dir('testout'))-2
-    FileTif=sprintf('\\testout\\merge_f%04d.tif',i);
-    FileTif=[pwd FileTif];
+    FileTif=sprintf('merge_f%04d.tif',i);
+    FileTif=fullfile(pwd,'testout',FileTif);
     InfoImage=imfinfo(FileTif);
     mImage=InfoImage(1).Width;
     nImage=InfoImage(1).Height;
@@ -18,8 +18,8 @@ for i=1:1:numel(dir('testout'))-2
     b=FinalImage(:,:,4);
     c=imfuse(a,b);
     d=rgb2gray(c);
-    fimg=sprintf('\\mergenuclear\\nuclear_f%04d.tif',i);
-    fimg=[pwd fimg];
+    fimg=sprintf('nuclear_f%04d.tif',i);
+    fimg=fullfile(pwd,'mergenuclear',fimg);
     imwrite(d,fimg);
 end
 %% Post ILASTIK Section makes binary masks
@@ -43,8 +43,8 @@ function h5tobinmaskFILE(filename,pos,label,tpt)
     [wshedcc] = makemask({filename}, pos, label, tpt); % gets binary mask
     
     ccshedcc = wshedcc;%bwconncomp(wshedcc); % bwconncomp was not working so I am not using it
-    fn1 = sprintf('\\masks\\mask_f%04d.tif',pos);
-    fn1=[pwd fn1];
+    fn1 = sprintf('mask_f%04d.tif',pos);
+    fn1=fullfile(pwd,'masks',fn1);
     imwrite(ccshedcc, fn1);
     
 end
@@ -75,7 +75,7 @@ function [io2, pnuc] = readmaskfilesKM(ilastikNucAll,lblN, tpt)
     
     ilastikfile=ilastikNucAll{1};
     p=pwd;
-    t=[p,'\Ilastik\',ilastikfile];
+    t=fullfile(p,'Ilastik',ilastikfile);
     io = h5read(t,'/exported_data');
     io = io(lblN,:,:,tpt);% make this into a variable ( which ilastik label to use as signal and which to use as background. the last dimension is time
     io1 = squeeze(io);
