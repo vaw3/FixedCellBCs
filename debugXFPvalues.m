@@ -3,69 +3,66 @@ path=pwd;
 load xfpdata.mat 
 load xfpctrldata.mat
 impath=[path,filesep,'testout',filesep];
-mpath=[path,filesep,'mergenuclear',filesep];
+mpath=[path,filesep,'voronoi',filesep];
 mkdir('debug')
 mkdir(['debug',filesep,'R1'])
+mkdir(['debug',filesep,'FR1'])
 mkdir(['debug',filesep,'R2'])
+mkdir(['debug',filesep,'FR2'])
  for p = 1:numel(dir('Ilastik'))-2% don't need to skip the first one
         imfn = sprintf('merge_f%04d.tif',p);
-        mfn = sprintf('nuclear_f%04d.tif',p);
-        %mfile = [mpath,mfn];
-%         imfile = [impath,imfn];
-%         mfile = [mpath, mfn];
-%         info2 = imfinfo(imfile);
-%         imageStack = [];
-%         imageStackR2 = [];
-        posstr=sprintf('%04d',p);
-        [R1img, R2img]=getrawimg(posstr, xfpdata);
-%         posstr=sprintf('%04d',p);
-%         imageStack(:,:,1)=imread(mfile);
-%         imageStack(:,:,2)=R1img;
-        imageStack(:,:,1) = imread([mpath mfn]);
-        for k = 2:3
-            currentImage = imread(imfile, k, 'Info', info2);
-            imageStack(:,:,k) = currentImage;
+        mfn = sprintf('voronoi_f%04d.tif',p);
+        imfile = [impath,imfn];
+        mfile = [mpath, mfn];
+        info2 = imfinfo(imfile);
+        currentImage =[];
+        for k= 1:2
+          currentImage(:,:,k) = imread(imfile, k+1, 'Info', info2);
         end
+        for k= 3:4
+          currentImage(:,:,k) = imread(imfile, k+3, 'Info', info2);
+        end
+        getrawimg(p,xfpdata,currentImage)
+        
         img=uint16(imageStack);
-        writeMultichannel(img,fullfile(['debug',filesep,'R1'],['debugR1_f' posstr '.tif']));
-        imageStackR2(:,:,1)=R2  img;
-        imageStackR2(:,:,2)=imread(imfile, 1, 'Info', info2);
         for k = 6:7
             currentImage = imread(imfile, k, 'Info', info2);
             imageStackR2(:,:,k-3) = currentImage;
         end
         writeMultichannel(imageStackR2,fullfile(['debug',filesep,'R2'],['debugR2_f' posstr '.tif']));
  end
-  function [R1img, R2img] = getrawimg(p, xfpdata)
+ function getrawimg(p, xfpdata,rnaimg)
  l=struct2cell(xfpdata(p).centroid);
+ posstr=sprintf('%04d',p);
         l=l';
         d=cell2mat(l);
-        text_str=[struct2cell(xfpdata(1).r1)' struct2cell(xfpdata(1).fr1)'];
-       fn1 = [filesep,'mergenuclear',filesep,'nuclear_f',posstr,'.tif'];
+        text_str=[struct2cell(xfpdata(p).r1)' struct2cell(xfpdata(p).fr1)'];
+       fn1 = [filesep,'voronoi',filesep,'voronoi_f',posstr,'.tif'];
+       fn2 = [pwd,filesep,'mergenuclear',filesep,'nuclear_f',posstr,'.tif'];
        fn1=[pwd fn1];
+       b=imread(fn2);
        a=imread(fn1);
-       t=zeros(1024,'logical');
-       imshow(a)
-       text(d(:,1)-30,d(:,2)-10, text_str(:,1) ,'Color','white','FontSize',6);
-       text(d(:,1)-30,d(:,2)+10, text_str(:,2) ,'Color','white','FontSize',6);
-       R1img=getframe(gcf);
-             l=imfuse(a,R1img.cdata);
-       z=rgb2gray(R1img.cdata);
-       z=im2uint16(z);
-       z=imresize(z, [1024 1024], 'bilinear');
-       R1img=z;
+       fusedim=imfuse(a,rnaimg(:,:,1),'ColorChannels',[1 2 0]);
+       fusedimb=imfuse(b,rnaimg(:,:,2));
+       imshow(fusedim)
+       text(d(:,1)-30,d(:,2)-10, text_str(:,1) ,'Color','white','FontSize',6,'FontWeight','bold');
+       saveas(gcf,fullfile(pwd,'debug','R1',['debugR1_f' posstr '.tif']));
+       close all
+       fusedim=imfuse(a,rnaimg(:,:,2),'ColorChannels',[1 2 0]);
+       imshow(fusedim)
+       text(d(:,1)-30,d(:,2)+10, text_str(:,2) ,'Color','white','FontSize',6,'FontWeight','bold');
+       saveas(gcf,fullfile(pwd,'debug','FR1',['debugFR1_f' posstr '.tif']));
        close all
        clear text_str
-       text_str=[struct2cell(xfpdata(1).r2)' struct2cell(xfpdata(1).fr2)'];
-       imshow(t)
-       text(d(:,1)-30,d(:,2)-10, text_str(:,1) ,'Color','white','FontSize',6);
-       text(d(:,1)-30,d(:,2)+10, text_str(:,2) ,'Color','white','FontSize',6);
-       clear text_str
-       R2img=getframe(gcf);
-       R2img=getframe(gcf);
-       z=rgb2gray(R2img.cdata);
-       z=im2uint16(z);
-       z=imresize(z, [1024 1024], 'bicubic');
-       R2img=z;
+       text_str=[struct2cell(xfpdata(p).r2)' struct2cell(xfpdata(p).fr2)'];
+       fusedim=imfuse(a,rnaimg(:,:,3),'ColorChannels',[1 2 0]);
+       imshow(fusedim)
+       text(d(:,1)-30,d(:,2)-10, text_str(:,1) ,'Color','white','FontSize',6,'FontWeight','bold');
+       saveas(gcf,fullfile(pwd,'debug','R2',['debugR2_f' posstr '.tif']));
+       close all
+       fusedim=imfuse(a,rnaimg(:,:,4),'ColorChannels',[1 2 0]);
+       imshow(fusedim)
+       text(d(:,1)-30,d(:,2)+10, text_str(:,2) ,'Color','white','FontSize',6,'FontWeight','bold');
+       saveas(gcf,fullfile(pwd,'debug','FR2',['debugFR2_f' posstr '.tif']));
        close all
 end

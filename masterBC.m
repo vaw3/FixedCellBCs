@@ -7,10 +7,12 @@ cthresh=700;
 rthresh=730;
 frthresh=810;
 path=pwd;
+mkdir voronoi
 mpath=fullfile(path,'masks');
 impath=fullfile(path,'testout');
   for p = 1:numel(dir('Ilastik'))-2% don't need to skip the first one
         imfn = sprintf('merge_f%04d.tif',p);
+        posstr=sprintf('%04d',p);
         mfn = sprintf('mask_f%04d.tif',p);
         imfile = [impath,filesep,imfn];
         mfile = [mpath,filesep,mfn];
@@ -30,6 +32,7 @@ impath=fullfile(path,'testout');
         new_mask = voronoiMaskIntersection(voronoi, mask);
         imshow(new_mask);
         cc3 = bwconncomp(new_mask);
+        imwrite(new_mask,fullfile(pwd,'voronoi',['voronoi_f' posstr '.tif']))
         xfpdata(p).centroid = regionprops(cc3,imageStack(:,:,1),'Centroid');
         xfpdata(p).cfp = regionprops(cc3,imageStack(:,:,1),'MeanIntensity');
         xfpdata(p).yfp = regionprops(cc3,imageStack(:,:,4),'MeanIntensity');

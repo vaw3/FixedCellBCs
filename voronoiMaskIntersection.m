@@ -1,6 +1,6 @@
 function [new_mask] = voronoiMaskIntersection (voronoi_mask, combined_mask)
     cut_mask = combined_mask - (voronoi_mask == 0 & combined_mask ~= 0);
-    cut_mask = bwareaopen(cut_mask, 200);
+    cut_mask = bwareaopen(cut_mask, 100);
     %imshow(cut_mask);
     se = strel('disk', 8);
     dilate_mask = imdilate(cut_mask, se);

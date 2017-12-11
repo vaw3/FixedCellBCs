@@ -1,24 +1,24 @@
-clear all
-path=pwd;
+% clear all
+% path=pwd;
 % mergeMultipleMontageDirectories({'ControlR1'},{'ControlR1'},[3 3],3,'control1');
 % mergeMultipleMontageDirectories({'ControlR2'},{'ControlR2'},[3 3],3,'control2');
-mkdir('ctrlmasks');
-mkdir('mergectrl');
-for ii=1:2
-for i=1:1:numel(dir('control1'))-2
-    foldertif=sprintf('control%d',ii);
-    filetif=sprintf('merge_f%04d.tif',i);
-    FileTif=fullfile(pwd,foldertif,filetif);
-    InfoImage=imfinfo(FileTif);
-    mImage=InfoImage(1).Width;
-    nImage=InfoImage(1).Height;
-    a=zeros(nImage,mImage,1,'uint16');
-    a=imread(FileTif,'Index',1);
-    fctrl=sprintf('ctrl_%d_f%04d.tif',ii,i);
-    fctrl=fullfile(pwd,'mergectrl',fctrl);
-    imwrite(a, fctrl);
-end
-end
+% mkdir('ctrlmasks');
+% mkdir('mergectrl');
+% for ii=1:2
+% for i=1:1:numel(dir('control1'))-2
+%     foldertif=sprintf('control%d',ii);
+%     filetif=sprintf('merge_f%04d.tif',i);
+%     FileTif=fullfile(pwd,foldertif,filetif);
+%     InfoImage=imfinfo(FileTif);
+%     mImage=InfoImage(1).Width;
+%     nImage=InfoImage(1).Height;
+%     a=zeros(nImage,mImage,1,'uint16');
+%     a=imread(FileTif,'Index',1);
+%     fctrl=sprintf('ctrl_%d_f%04d.tif',ii,i);
+%     fctrl=fullfile(pwd,'mergectrl',fctrl);
+%     imwrite(a, fctrl);
+% end
+% end
 %% Post Ilastik
 for ii=1:2
 for pos=1:1:numel(dir('control1'))-2
@@ -37,7 +37,7 @@ for ii=1:2
 for p = 1:numel(dir('control1'))-2% don't need to skip the first one
         imfn = sprintf('merge_f%04d.tif',p);
         mfn = sprintf('ctrlmask_%d_f%04d.tif',ii,p);
-        imfile = [impath,imfn];
+        imfile = fullfile(impath,imfn);
         mfile = [mpath,mfn];
         info2 = imfinfo(imfile);
         imageStack = [];

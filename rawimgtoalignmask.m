@@ -1,27 +1,27 @@
 clear all
 
-mergeMultipleMontageDirectories({'BYR1','BYR2'},{'BYR3','BYR4'},[7 7],4,'testout');
+%mergeMultipleMontageDirectories({'BYR1','BYR2'},{'BYR3','BYR4'},[7 7],4,'testout');
 %%
-mkdir('mergenuclear')
-for i=1:1:numel(dir('testout'))-2
-    FileTif=sprintf('merge_f%04d.tif',i);
-    FileTif=fullfile(pwd,'testout',FileTif);
-    InfoImage=imfinfo(FileTif);
-    mImage=InfoImage(1).Width;
-    nImage=InfoImage(1).Height;
-    NumberImages=length(InfoImage);
-    FinalImage=zeros(nImage,mImage,NumberImages,'uint16');
-        for j=1:NumberImages
-        FinalImage(:,:,j)=imread(FileTif,'Index',j);
-        end
-    a=FinalImage(:,:,1);
-    b=FinalImage(:,:,4);
-    c=imfuse(a,b);
-    d=rgb2gray(c);
-    fimg=sprintf('nuclear_f%04d.tif',i);
-    fimg=fullfile(pwd,'mergenuclear',fimg);
-    imwrite(d,fimg);
-end
+% mkdir('mergenuclear')
+% for i=1:1:numel(dir('testout'))-2
+%     FileTif=sprintf('merge_f%04d.tif',i);
+%     FileTif=fullfile(pwd,'testout',FileTif);
+%     InfoImage=imfinfo(FileTif);
+%     mImage=InfoImage(1).Width;
+%     nImage=InfoImage(1).Height;
+%     NumberImages=length(InfoImage);
+%     FinalImage=zeros(nImage,mImage,NumberImages,'uint16');
+%         for j=1:NumberImages
+%         FinalImage(:,:,j)=imread(FileTif,'Index',j);
+%         end
+%     a=FinalImage(:,:,1);
+%     b=FinalImage(:,:,4);
+%     c=imfuse(a,b);
+%     d=rgb2gray(c);
+%     fimg=sprintf('nuclear_f%04d.tif',i);
+%     fimg=fullfile(pwd,'mergenuclear',fimg);
+%     imwrite(d,fimg);
+% end
 %% Post ILASTIK Section makes binary masks
 mkdir('masks');
 for pos=1:1:numel(dir('Ilastik'))-2

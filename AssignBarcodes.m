@@ -3,8 +3,9 @@
 clear all
 mkdir lineageimg
 load xfpdata.mat
-tcfp=2; tyfp=2; tbfp=2;
-tred=2;tfar=2;
+tcfp=400; tyfp=400; tbfp=2;
+tred1=450;tfar1=200;
+tred2=450;tfar2=450;
 lineages = {'B','Y','1','2','3','4'};
 lineagecomb={'B','Y','1','2','3','4','N'};
 lineagecomb=string(lineagecomb');
@@ -41,28 +42,28 @@ for ii=1:size(xfpdata(p).centroid,1)
         xfpdata(p).uid(ii,2)=false;
         xfpdata(p).fid(ii,2)=' ';
     end
-    if  cell2mat(struct2cell(xfpdata(p).r1(ii)))>tred
+    if  cell2mat(struct2cell(xfpdata(p).r1(ii)))>tred1
         xfpdata(p).uid(ii,3)=true;
         xfpdata(p).fid(ii,3)='2';
     else
         xfpdata(p).uid(ii,3)=false;
         xfpdata(p).fid(ii,3)=' ';
     end
-    if  cell2mat(struct2cell(xfpdata(p).fr1(ii)))>tfar
+    if  cell2mat(struct2cell(xfpdata(p).fr1(ii)))>tfar1
         xfpdata(p).uid(ii,4)=true;
         xfpdata(p).fid(ii,4)='4';
     else
         xfpdata(p).uid(ii,4)=false;
         xfpdata(p).fid(ii,4)=' ';
     end
-    if  cell2mat(struct2cell(xfpdata(p).r2(ii)))>tred
+    if  cell2mat(struct2cell(xfpdata(p).r2(ii)))>tred2
         xfpdata(p).uid(ii,5)=true;
         xfpdata(p).fid(ii,5)='1';
     else
         xfpdata(p).uid(ii,5)=false; 
         xfpdata(p).fid(ii,5)=' ';
     end
-     if cell2mat(struct2cell(xfpdata(p).fr2(ii)))>tfar
+     if cell2mat(struct2cell(xfpdata(p).fr2(ii)))>tfar2
         xfpdata(p).uid(ii,6)=true;
         xfpdata(p).fid(ii,6)='3';
     else
@@ -74,7 +75,7 @@ end
         continue
         end
         posstr=sprintf('%04d.tif',p);
-        getrawimg(posstr,xfpdata);
+        getrawimg(p,xfpdata);
         fn1=[filesep,'lineageimg',filesep,'lineageimg_',posstr];
         fn1=[pwd fn1];
         saveas(gcf,fn1);       
@@ -86,12 +87,13 @@ end
  function rawvalpic = getrawimg(p, xfpdata)
  l=struct2cell(xfpdata(p).centroid);
         l=l';
+        posstr=sprintf('%04d',p);
         d=cell2mat(l);
         text_str = cell(size(xfpdata(p).r1,1),1);
         for ii=1:size(xfpdata(p).r1,1)
                  text_str{ii,1} = xfpdata(p).fid(ii,:);           
         end
-        fn1=[filesep,'masks',filesep,'mask_',posstr];
+        fn1=[filesep,'masks',filesep,'mask_f',posstr,'.tif'];
         fn1=[pwd fn1];
        a=imread(fn1);
        imshow(a)
