@@ -71,7 +71,13 @@ for ii=1:size(xfpdata(p).centroid,1)
         xfpdata(p).fid(ii,6)=' ';
      end
 end
+for p=1:size(xfpdata,2)
+   tmp=xfpdata(p).fid;
+   k=cellstr(tmp);
+   tmp=s
+end
 
+save('xfplineage.mat','xfpdata');
 %         if (size(cell2mat(struct2cell(xfpdata(p).centroid)),2)<3)
 %         continue
 %         end
@@ -83,14 +89,6 @@ end
          
     
 end
-for p=1:size(xfpdata,2)
-   tmp=xfpdata(p).fid;
-   k=cellstr(tmp);
-   tmp=strrep(k,' ','');
-   xfpdata(p).fid=tmp;
-end
-
-save('xfplineage.mat','xfpdata');
 %% Runtime
 
  function rawvalpic = getrawimg(p, xfpdata)

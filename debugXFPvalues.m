@@ -24,12 +24,12 @@ mkdir(['debug',filesep,'FR2'])
         end
         getrawimg(p,xfpdata,currentImage)
         
-        img=uint16(imageStack);
-        for k = 6:7
-            currentImage = imread(imfile, k, 'Info', info2);
-            imageStackR2(:,:,k-3) = currentImage;
-        end
-        writeMultichannel(imageStackR2,fullfile(['debug',filesep,'R2'],['debugR2_f' posstr '.tif']));
+%         img=uint16(imageStack);
+%         for k = 6:7
+%             currentImage = imread(imfile, k, 'Info', info2);
+%             imageStackR2(:,:,k-3) = currentImage;
+%         end
+%         writeMultichannel(imageStackR2,fullfile(['debug',filesep,'R2'],['debugR2_f' posstr '.tif']));
  end
  function getrawimg(p, xfpdata,rnaimg)
  l=struct2cell(xfpdata(p).centroid);
@@ -45,24 +45,24 @@ mkdir(['debug',filesep,'FR2'])
        fusedim=imfuse(a,rnaimg(:,:,1),'ColorChannels',[1 2 0]);
        fusedimb=imfuse(b,rnaimg(:,:,2));
        imshow(fusedim)
-       text(d(:,1)-30,d(:,2)-10, text_str(:,1) ,'Color','white','FontSize',6,'FontWeight','bold');
+       text(d(:,1)-30,d(:,2)-10, text_str(:,1) ,'Color','cyan','FontSize',6,'FontWeight','bold');
        saveas(gcf,fullfile(pwd,'debug','R1',['debugR1_f' posstr '.tif']));
        close all
        fusedim=imfuse(a,rnaimg(:,:,2),'ColorChannels',[1 2 0]);
        imshow(fusedim)
-       text(d(:,1)-30,d(:,2)+10, text_str(:,2) ,'Color','white','FontSize',6,'FontWeight','bold');
+       text(d(:,1)-30,d(:,2)+10, text_str(:,2) ,'Color','cyan','FontSize',6,'FontWeight','bold');
        saveas(gcf,fullfile(pwd,'debug','FR1',['debugFR1_f' posstr '.tif']));
        close all
        clear text_str
        text_str=[struct2cell(xfpdata(p).r2)' struct2cell(xfpdata(p).fr2)'];
        fusedim=imfuse(a,rnaimg(:,:,3),'ColorChannels',[1 2 0]);
        imshow(fusedim)
-       text(d(:,1)-30,d(:,2)-10, text_str(:,1) ,'Color','white','FontSize',6,'FontWeight','bold');
+       text(d(:,1)-30,d(:,2)-10, text_str(:,1) ,'Color','cyan','FontSize',6,'FontWeight','bold');
        saveas(gcf,fullfile(pwd,'debug','R2',['debugR2_f' posstr '.tif']));
        close all
        fusedim=imfuse(a,rnaimg(:,:,4),'ColorChannels',[1 2 0]);
        imshow(fusedim)
-       text(d(:,1)-30,d(:,2)+10, text_str(:,2) ,'Color','white','FontSize',6,'FontWeight','bold');
+       text(d(:,1)-30,d(:,2)+10, text_str(:,2) ,'Color','cyan','FontSize',6,'FontWeight','bold');
        saveas(gcf,fullfile(pwd,'debug','FR2',['debugFR2_f' posstr '.tif']));
        close all
 end
