@@ -1,6 +1,0 @@
-load('xfplineage.mat');    
-lineage=xfpdata(1).fid;
-for i=2:size(xfpdata,2)
-    tmp=xfpdata(i).fid;
-    yfp=[lineage tmp];
-end
