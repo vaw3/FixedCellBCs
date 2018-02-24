@@ -102,9 +102,4 @@ end
  histogram(fr2ctrl,h4.BinEdges)
  title('fr2ctrl')
  saveas(gcf,'XFPHistograms.fig')
- if n==3
-     figure
-      histogram(yfp,25)
-      title('yfp')
-      saveas(gcf,'YFPHistogram.fig')
- end
+ figure close

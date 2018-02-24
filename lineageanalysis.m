@@ -1,9 +1,11 @@
-
+clear all
 load('xfplineage.mat');    
 %% Colony Finding
 colony=struct('colonyx',0,'colonyy',0);
+colony=repmat(colony,[size(xfpdata,2),1]);
 for i=1:size(xfpdata,2)
-    index=0;
+    index=1;
+    debug=1;
     for j=1:size(xfpdata(i).centroid,1)
         bcode=xfpdata(i).fid(j);
         ct=0;
@@ -14,26 +16,28 @@ for i=1:size(xfpdata,2)
                 %Threshold 125 is based on a multiple of diameter
                 %(currently 5*diameter of 25)
                 ct=ct+1;
-                centroid(ct) = [struct2cell(xfpdata(i).centroid(k))]; 
+                centroid(ct,1) = [struct2cell(xfpdata(i).centroid(k))]; 
             end
         end
         tmp=cell2mat(centroid);
         tmpx=mean(tmp(:,1));
         tmpy=mean(tmp(:,2));
+        debug=debug+1;
         if any(colony(i).colonyx==tmpx) &&...
                 any(colony(i).colonyy==tmpy)
             continue
         else
-        colony(i).barcode(index)=bcode;
-        colony(i).cells(index)=ct;
+        colony(i).barcode(index,1)=bcode;
+        colony(i).cells(index,1)=ct;
         colony(i).centroids(index).value=tmp;        
-        colony(i).colonyx(index) = tmpx;
-        colony(i).colonyy(index) = tmpy;
+        colony(i).colonyx(index,1) = tmpx;
+        colony(i).colonyy(index,1) = tmpy;
         index=index+1;
         end    
     end
+    t(i)=debug;
 end
-            
+save('colonydata.mat','colony')       
                 
                 
         

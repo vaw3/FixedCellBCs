@@ -1,10 +1,10 @@
 %{
-1. First run ControlImgtoHist and RawImagtoAlignMask while in the directory
+1. First run ControlImgtoHist and Rawimgtoalignmask while in the directory
 with the raw image data files. Both files align images and make nucleus
 only composites under mergectrl and mergenuclear directories
 respectively.
 
-RUN ILASTIK ON MERGECTRL AND MERGENUCLEAR FILES
+RUN ILASTIK ON MERGECTRL AND mergenuclear FILES
 
 After ILASTIK processing of nucleus composites, both files also have
 separate sections that process h5 files into binary TIFs. Additionally
@@ -29,4 +29,5 @@ Implementation of categorical analysis of lineages underway. Finally, this
 script saves nuclearcomposite images of each position of true sample in
 lineageimg with the lineage ID printed on centroid of nucleus. 
 
+5. Run lineagehistogram and lineageanalysis
 %}

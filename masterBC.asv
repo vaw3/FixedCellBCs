@@ -34,16 +34,13 @@ impath=fullfile(path,'testout');
         imshow(new_mask);
         cc3 = bwconncomp(new_mask);
         imwrite(new_mask,fullfile(pwd,'voronoi',['voronoi_f' posstr '.tif']))
-        xfpdata(p).centroid = regionprops(cc3,imageStack(:,:,1),'Centroid'); %try removing imageStack (:,:,1)
-        xfpdata(p).bfp = regionprops(cc3,imageStack(:,:,1),'MeanIntensity');
-        xfpdata(p).cfp = regionprops(cc3,imageStack(:,:,4),'MeanIntensity');
-        if n==3
-             xfpdata(p).yfp = regionprops(cc3,imageStack(:,:,5),'MeanIntensity');
-        end
+        xfpdata(p).centroid = regionprops(cc3,imageStack(:,:,1),'Centroid');
+        xfpdata(p).cfp = regionprops(cc3,imageStack(:,:,1),'MeanIntensity');
+        xfpdata(p).yfp = regionprops(cc3,imageStack(:,:,4),'MeanIntensity');
         xfpdata(p).r1= regionprops(cc3, imageStack(:,:,2), 'MeanIntensity');
-        xfpdata(p).r2= regionprops(cc3, imageStack(:,:,(6+n-2)), 'MeanIntensity');
+        xfpdata(p).r2= regionprops(cc3, imageStack(:,:,6), 'MeanIntensity');
         xfpdata(p).fr1= regionprops(cc3, imageStack(:,:,3), 'MeanIntensity');
-        xfpdata(p).fr2= regionprops(cc3, imageStack(:,:,(7+n-2)), 'MeanIntensity');
+        xfpdata(p).fr2= regionprops(cc3, imageStack(:,:,7), 'MeanIntensity');
      end 
 save('xfpdata','xfpdata');
 

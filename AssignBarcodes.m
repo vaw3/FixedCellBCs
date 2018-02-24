@@ -28,6 +28,13 @@ end
 lineageID=categorical(lineagecomb);
 for p=1:size(xfpdata,2)
 for ii=1:size(xfpdata(p).centroid,1)
+    if  cell2mat(struct2cell(xfpdata(p).bfp(ii)))>tbfp
+        xfpdata(p).uid(ii,1)=true;
+        xfpdata(p).fid(ii,1)='B';
+    else
+        xfpdata(p).uid(ii,1)=false;
+        xfpdata(p).fid(ii,1)=' ';
+    end
     if  cell2mat(struct2cell(xfpdata(p).cfp(ii)))>tcfp
         xfpdata(p).uid(ii,1)=true;
         xfpdata(p).fid(ii,1)='C';
@@ -35,12 +42,14 @@ for ii=1:size(xfpdata(p).centroid,1)
         xfpdata(p).uid(ii,1)=false;
         xfpdata(p).fid(ii,1)=' ';
     end
-    if  cell2mat(struct2cell(xfpdata(p).yfp(ii)))>tyfp
-        xfpdata(p).uid(ii,2)=true;
-        xfpdata(p).fid(ii,2)='Y';
-    else
-        xfpdata(p).uid(ii,2)=false;
-        xfpdata(p).fid(ii,2)=' ';
+    if n==3
+        if  cell2mat(struct2cell(xfpdata(p).yfp(ii)))>tyfp
+            xfpdata(p).uid(ii,2)=true;
+            xfpdata(p).fid(ii,2)='Y';
+        else
+            xfpdata(p).uid(ii,2)=false;
+            xfpdata(p).fid(ii,2)=' ';
+        end
     end
     if  cell2mat(struct2cell(xfpdata(p).r1(ii)))>tred1
         xfpdata(p).uid(ii,3)=true;
