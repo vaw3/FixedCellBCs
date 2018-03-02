@@ -3,9 +3,10 @@
 clear all
 mkdir lineageimg
 load xfpdata.mat
-tcfp=400; tyfp=400; tbfp=2;
-tred1=550;tfar1=550;
-tred2=550;tfar2=550;
+tcfp=400; tyfp=400; tbfp=400;
+n=input('How many fluorescent proteins in this system?');
+tred1=450;tfar1=200;
+tred2=450;tfar2=450;
 lineages = {'B','Y','1','2','3','4'};
 lineagecomb={'B','Y','1','2','3','4','N'};
 lineagecomb=string(lineagecomb');
@@ -28,24 +29,24 @@ end
 lineageID=categorical(lineagecomb);
 for p=1:size(xfpdata,2)
 for ii=1:size(xfpdata(p).centroid,1)
-    if  cell2mat(struct2cell(xfpdata(p).bfp(ii)))>tbfp
+    if  cell2mat(struct2cell(xfpdata(p).cfp(ii)))>tcfp
         xfpdata(p).uid(ii,1)=true;
-        xfpdata(p).fid(ii,1)='B';
+        xfpdata(p).fid(ii,1)='C';
     else
         xfpdata(p).uid(ii,1)=false;
         xfpdata(p).fid(ii,1)=' ';
     end
-    if  cell2mat(struct2cell(xfpdata(p).cfp(ii)))>tcfp
+    if  cell2mat(struct2cell(xfpdata(p).yfp(ii)))>tyfp
         xfpdata(p).uid(ii,2)=true;
-        xfpdata(p).fid(ii,2)='C';
+        xfpdata(p).fid(ii,2)='Y';
     else
         xfpdata(p).uid(ii,2)=false;
         xfpdata(p).fid(ii,2)=' ';
     end
     if n==3
-        if  cell2mat(struct2cell(xfpdata(p).yfp(ii)))>tyfp
+        if  cell2mat(struct2cell(xfpdata(p).bfp(ii)))>tbfp
             xfpdata(p).uid(ii,n)=true;
-            xfpdata(p).fid(ii,n)='Y';
+            xfpdata(p).fid(ii,n)='B';
         else
             xfpdata(p).uid(ii,n)=false;
             xfpdata(p).fid(ii,n)=' ';

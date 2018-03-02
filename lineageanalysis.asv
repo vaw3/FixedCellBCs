@@ -52,7 +52,6 @@ for i=1:1%size(colony,1)
 end
 for i=1:1%size(colony,1)
     figure
-    for j=1:1%size(
     for j=1:size(colony(i).centroids(j))
         scatter(colony(i).centroids(j).value,'*r')
         hold on

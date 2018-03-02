@@ -1,7 +1,8 @@
 %%Debug script
+clear all
 path=pwd;
 load xfpdata.mat 
-load xfpctrldata.mat
+%load xfpctrldata.mat
 impath=[path,filesep,'testout',filesep];
 mpath=[path,filesep,'voronoi',filesep];
 mkdir('debug')
@@ -9,6 +10,8 @@ mkdir(['debug',filesep,'R1'])
 mkdir(['debug',filesep,'FR1'])
 mkdir(['debug',filesep,'R2'])
 mkdir(['debug',filesep,'FR2'])
+mkdir(['debug',filesep,'FP1'])
+mkdir(['debug',filesep,'FP2'])
  for p = 1:numel(dir('Ilastik'))-2% don't need to skip the first one
         imfn = sprintf('merge_f%04d.tif',p);
         mfn = sprintf('voronoi_f%04d.tif',p);
@@ -16,6 +19,8 @@ mkdir(['debug',filesep,'FR2'])
         mfile = [mpath, mfn];
         info2 = imfinfo(imfile);
         currentImage =[];
+        nucfpimg(:,:,1) = imread(imfile, 1, 'Info', info2);
+        nucfpimg(:,:,2) = imread(imfile, 4, 'Info', info2);
         for k= 1:2
           currentImage(:,:,k) = imread(imfile, k+1, 'Info', info2);
         end
@@ -23,6 +28,7 @@ mkdir(['debug',filesep,'FR2'])
           currentImage(:,:,k) = imread(imfile, k+3, 'Info', info2);
         end
         getrawimg(p,xfpdata,currentImage)
+        %nucimg(p,xfpdata,nucfpimg)
         
 %         img=uint16(imageStack);
 %         for k = 6:7
@@ -37,9 +43,8 @@ mkdir(['debug',filesep,'FR2'])
         l=l';
         d=cell2mat(l);
         text_str=[struct2cell(xfpdata(p).r1)' struct2cell(xfpdata(p).fr1)'];
-       fn1 = [filesep,'voronoi',filesep,'voronoi_f',posstr,'.tif'];
+       fn1 = [pwd,filesep,'voronoi',filesep,'voronoi_f',posstr,'.tif'];
        fn2 = [pwd,filesep,'mergenuclear',filesep,'nuclear_f',posstr,'.tif'];
-       fn1=[pwd fn1];
        b=imread(fn2);
        a=imread(fn1);
        fusedim=imfuse(a,rnaimg(:,:,1),'ColorChannels',[1 2 0]);
@@ -65,4 +70,20 @@ mkdir(['debug',filesep,'FR2'])
        text(d(:,1)-30,d(:,2)+10, text_str(:,2) ,'Color','cyan','FontSize',6,'FontWeight','bold');
        saveas(gcf,fullfile(pwd,'debug','FR2',['debugFR2_f' posstr '.tif']));
        close all
+ end
+function nucimg(p, xfpdata,fpimg)
+ l=struct2cell(xfpdata(p).centroid);
+ posstr=sprintf('%04d',p);
+        l=l';
+        d=cell2mat(l);
+        text_str=[struct2cell(xfpdata(p).bfp)' struct2cell(xfpdata(p).bfp)'];
+       imshow(fpimg(:,:,1), [])
+       text(d(:,1)-30,d(:,2)-10, text_str(:,1) ,'Color','cyan','FontSize',6,'FontWeight','bold');
+       saveas(gcf,fullfile(pwd,'debug','FP1',['debugFP1_f' posstr '.tif']));
+       clear text_str
+       close all
+       text_str=[struct2cell(xfpdata(p).cfp)' struct2cell(xfpdata(p).cfp)'];
+       imshow(fpimg(:,:,2), [])
+       text(d(:,1)-30,d(:,2)-10, text_str(:,1) ,'Color','cyan','FontSize',6,'FontWeight','bold');
+       saveas(gcf,fullfile(pwd,'debug','FP2',['debugFP2_f' posstr '.tif']));
 end
