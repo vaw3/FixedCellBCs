@@ -1,7 +1,7 @@
-% clear all
-% n=input('How many fluorescent proteins in this system?');
-% mergeMultipleMontageDirectories({'BCR1','BCR2'},{'BCR3','BCR4'},[7 7],(n+2),'testout');
-% %
+clear all
+n=input('How many fluorescent proteins in this system?');
+mergeMultipleMontageDirectories({'BYR1','BYR2'},{'BYR3','BYR4'},[7 7],(n+2),'testout',1);
+%
 % mkdir('mergenuclear')
 % for i=1:1:numel(dir('testout'))-2
 %     FileTif=sprintf('merge_f%04d.tif',i);

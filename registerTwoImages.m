@@ -35,7 +35,7 @@ for ii = 1:size(img1in,3)
             img2shift(row_shift+1:end,1:nc,ii) = img2in(:,:,ii);
             img1shift(:,:,ii) =uint16(zeros(size(img2shift(:,:,ii))));
             img1shift(1:nr,abs(col_shift)+1:end,ii) = img1in(:,:,ii);
-        end
+        end 
     else %img2 below img 1
         if col_shift > 0 %img 2 left of img1
             img2shift(:,:,ii) = uint16(zeros(size(img2)+abs([row_shift, col_shift])));

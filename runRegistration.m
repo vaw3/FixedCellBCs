@@ -22,8 +22,8 @@ sn = numberOfFolders - 2; % sn = no. of samples
 %}
 %%
 dim=input('Enter image side length  ')       
-ff = readAndorDirectory('D:\exp5\masks_tif\D2BMP');% i made a file in my matlab folder that contains all the masks
-ffhyb = readAndorDirectory('D:\exp5\masks_tif\D2BMPHyb2');
+ff = readAndorDirectory('D:\exp5\masks_tif\D4BMP');% i made a file in my matlab folder that contains all the masks
+ffhyb = readAndorDirectory('D:\exp5\masks_tif\D4BMPHyb2');
 fnm=strcat(dir1,'Multi\',ff.prefix);
 fnc=strcat(dir1,'Composite\',ff.prefix);
 mkdir(fnm)
@@ -52,6 +52,7 @@ for pos =0:1:((dim*dim)-1)
     elseif(pos>=dim*(dim-1))
         mapclean(1:3,1:2)=map(1:2,1:3);
     end
+
         
         
             
@@ -59,7 +60,7 @@ for pos =0:1:((dim*dim)-1)
         img1(:,:,ww+1) = imread(getAndorFileName(ff(1),pos,0,0,ww));
         img2(:,:,ww+1) = imread(getAndorFileName(ffhyb(1),pos,0,0,ww));
     end
-    [img_stack, row_s, col_s] = registerTwoImages(img2,img1,1); %or the other way
+    [img_stack, row_s, col_s] = registerTwoImages(img1,img2,1); %or the other way
     if(row_s<0||col_s<0)
         [img_stack, row_s, col_s] = registerTwoImages(img1,img2,1);
     end

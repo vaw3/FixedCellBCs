@@ -7,10 +7,9 @@ ythresh=850;
 cthresh=700;
 rthresh=730;
 frthresh=810;
-path=pwd;
 mkdir voronoi
-mpath=fullfile(path,'masks');
-impath=fullfile(path,'testout');
+mpath=fullfile(pwd,'masks');
+impath=fullfile(pwd,'testout');
   for p = 1:numel(dir('Ilastik'))-2% don't need to skip the first one
         imfn = sprintf('merge_f%04d.tif',p);
         posstr=sprintf('%04d',p);
