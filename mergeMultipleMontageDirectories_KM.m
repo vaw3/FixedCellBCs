@@ -11,54 +11,52 @@ function mergeMultipleMontageDirectories(directory1,directory2,dims,chans,outdir
 % on the registered image to align the montage and will write a montage
 % image for each channel in outdir (NOTE: this feature not tested)
 
-% max_imgs = prod(dims);
-% 
-% if ~exist(outdir,'dir')
-%     mkdir(outdir);
-% end
-% 
-% 
-% for ii = 1:max_imgs
-%     col = mod(ii-1,dims(1))+1;
-%     row = floor((ii - col)/dims(1))+1;
-%     
-%     imgnow1 = maxIntensityLSMMontage(directory1{1},ii);
-%     for kk = 2:length(directory1)
-%         imgnow1 = cat(3,imgnow1,maxIntensityLSMMontage(directory1{kk},ii));
-%     end
-%     
-%     imgnow2 = maxIntensityLSMMontage(directory2{1},ii);
-%     for kk = 2:length(directory2)
-%         imgnow2 = cat(3,imgnow2,maxIntensityLSMMontage(directory2{kk},ii));
-%     end
-%     
-%     [fi,shift(ii,1),shift(ii,2)] = registerTwoImages(imgnow1,imgnow2,chans);
-%     
-%     posstr = int2str(ii);
-%     while length(posstr) < 4
-%         posstr = ['0' posstr];
-%     end
-%     
-%     all_imgs{row,col}=fi;
-%     %all_imgs{row,col}=imgnow1;
-% 
-%     
-% end
+max_imgs = prod(dims);
 
-%     si = size(all_imgs);
+if ~exist(outdir,'dir')
+    mkdir(outdir);
+end
+
+
+for ii = 1:max_imgs
+    col = mod(ii-1,dims(1))+1;
+    row = floor((ii - col)/dims(1))+1;
+    
+    imgnow1 = maxIntensityLSMMontage(directory1{1},ii);
+    for kk = 2:length(directory1)
+        imgnow1 = cat(3,imgnow1,maxIntensityLSMMontage(directory1{kk},ii));
+    end
+    
+    imgnow2 = maxIntensityLSMMontage(directory2{1},ii);
+    for kk = 2:length(directory2)
+        imgnow2 = cat(3,imgnow2,maxIntensityLSMMontage(directory2{kk},ii));
+    end
+    
+    [fi,shift(ii,1),shift(ii,2)] = registerTwoImages(imgnow1,imgnow2,chans);
+     all_imgs{row,col}=fi;
+    %all_imgs{row,col}=imgnow1;
+
+    
+end
+
+    save('shift.mat','shift');
+      si = size(all_imgs);
 %     all_si_c = cellfun(@size,all_imgs,'UniformOutput',false);
 %     all_si = cell2mat(all_si_c);
 %     im_max_size = [max(max(all_si(:,[1 3 5 7]))) max(max(all_si(:,[2 4 6 8])))];
 %     %im_max_size = [max(max(all_si(:,1))) max(max(all_si(:,2)))]; 
 %     toAlign = cell(dims);
-%     for ii=1:si(1)
-%         for jj = 1:si(2)    
-%             toAlign{ii,jj} = max(all_imgs{ii,jj}(:,:,alignchans),[],3);
-%         end
-%     end
-    [ac, pix]=alignManyImages_KM(all_imgs,200);
-    writeMultichannel(fi,fullfile(outdir,['merge_f' posstr '.tif']));
-    save('shift.mat','shift');
+      [ac, pix]=alignManyImages_KM(all_imgs,200);
+      ct=1;
+    for ii=1:si(1)
+        for jj = 1:si(2)    
+            fi=pix{ii}{jj};
+            posstr=sprintf('%04d',ct);
+            writeMultichannel(fi,fullfile(outdir,['merge_f' posstr '.tif']));
+            ct=ct+1;
+        end
+    end
+  
 %     for kk = 1:size(all_imgs{1,1},3)
 %         for ii=1:si(1)
 %             for jj = 1:si(2)

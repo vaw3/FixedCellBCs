@@ -49,16 +49,17 @@ for i=1:1%size(colony,1)
     hold on
     viscircles([colony(i).colonyx colony(i).colonyy], colony(i).maxdist)
     hold off
+    close gcf
 end
 for i=1:1%size(colony,1)
     figure
-    for j=1:1%size(
-    for j=1:size(colony(i).centroids(j))
-        scatter(colony(i).centroids(j).value,'*r')
+    for j=1:size(colony(i).barcode,1)
+        tmp=colony(i).centroids(j).value;
+        scatter(tmp(:,1),tmp(:,2),'*r')
         hold on
     end
-    viscircles([colony(i).colonyx colony(i).colonyy], colony(i).maxdist)
     hold off
+    close gcf
 end
    
                 

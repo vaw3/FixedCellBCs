@@ -21,7 +21,7 @@ for ii=1:dims(1)
         end
     end
 end
-acoords=0;
+acoords=maxov;
 
 % 
 % si=size(imgs{1,1});
