@@ -1,4 +1,4 @@
-function mergeMultipleMontageDirectories(directory1,directory2,dims,chans,outdir,alignchans)
+function mergeMultipleMontageDirectories_KM(directory1,directory2,dims,chans,outdir,alignchans)
 % Register multiple LSM montages to produce one multichannel montage.
 % Output in Andor format
 % directory1/2 are cell arrays containing directory names for multiple
@@ -33,7 +33,7 @@ for ii = 1:max_imgs
     end
     
     [fi,shift(ii,1),shift(ii,2)] = registerTwoImages(imgnow1,imgnow2,chans);
-     all_imgs{row,col}=fi;
+    all_imgs{row,col}=fi;
     %all_imgs{row,col}=imgnow1;
 
     
@@ -50,7 +50,7 @@ end
       ct=1;
     for ii=1:si(1)
         for jj = 1:si(2)    
-            fi=pix{ii}{jj};
+            fi=pix{ii,jj};
             posstr=sprintf('%04d',ct);
             writeMultichannel(fi,fullfile(outdir,['merge_f' posstr '.tif']));
             ct=ct+1;
