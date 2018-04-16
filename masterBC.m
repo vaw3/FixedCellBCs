@@ -1,4 +1,5 @@
 %%Run after rawimgtoalignmask
+%Sample specific data input here and in shiftcentroid()
 %yfp=850 cfp=700
 %561=730 640=810
 clear all
@@ -10,7 +11,7 @@ frthresh=810;
 mkdir voronoi
 mpath=fullfile(pwd,'masks');
 impath=fullfile(pwd,'testout');
-  for p = 1:numel(dir('Ilastik'))-2% don't need to skip the first one
+  for p = 1:numel(dir('Ilastik'))-3% don't need to skip the first one
         imfn = sprintf('merge_f%04d.tif',p);
         posstr=sprintf('%04d',p);
         mfn = sprintf('mask_f%04d.tif',p);
@@ -34,6 +35,8 @@ impath=fullfile(pwd,'testout');
         cc3 = bwconncomp(new_mask);
         imwrite(new_mask,fullfile(pwd,'voronoi',['voronoi_f' posstr '.tif']))
         xfpdata(p).centroid = regionprops(cc3,imageStack(:,:,1),'Centroid'); %try removing imageStack (:,:,1)
+        dimsy(p)=size(new_mask,1);
+        dimsx(p)=size(new_mask,2);
         xfpdata(p).bfp = regionprops(cc3,imageStack(:,:,1),'MeanIntensity');
         xfpdata(p).cfp = regionprops(cc3,imageStack(:,:,4),'MeanIntensity');
         if n==3
@@ -43,7 +46,11 @@ impath=fullfile(pwd,'testout');
         xfpdata(p).r2= regionprops(cc3, imageStack(:,:,(6+n-2)), 'MeanIntensity');
         xfpdata(p).fr1= regionprops(cc3, imageStack(:,:,3), 'MeanIntensity');
         xfpdata(p).fr2= regionprops(cc3, imageStack(:,:,(7+n-2)), 'MeanIntensity');
-     end 
+  end 
+  %7 by 7 is specific for sample
+  dimsx=reshape(dimsx,[7 7])';
+  dimsy=reshape(dimsy,[7 7])';
+[xfpdata]=shiftcentroid(dimsx,dimsy,xfpdata);
 save('xfpdata','xfpdata');
 
     

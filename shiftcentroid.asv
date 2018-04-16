@@ -1,10 +1,13 @@
-function [xfpdata]= shiftcentroid(dims,xfpdata)
+function [xfpdata]= shiftcentroid(dimsx,dimsy,xfpdata)
     load shift.mat
-    dims=cumsum(
+    dimsy=cumsum(dimsy);
+    dimsx=cumsum(dimsx,2);
+    dimsy=reshape(dimsy',[49 1]);
+    dimsx=reshape(dimsx',[49 1]);
     for i=1:size(xfpdata,2)
         tmp=cell2mat(struct2cell(xfpdata(i).centroid)');
-        tmp(:,1)=tmp(:,1)+dims(i,2)+shift(i,2);
-        tmp(:,2)=tmp(:,2)+dims(i,1)+shift(i,1);
+        tmp(:,1)=tmp(:,1)+dimsx(i)+shift(i,2);
+        tmp(:,2)=tmp(:,2)+dimsy(i)+shift(i,1);
         xfpdata(i).centroid=tmp;
     end
 end
