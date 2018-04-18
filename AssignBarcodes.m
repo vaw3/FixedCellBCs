@@ -4,6 +4,7 @@ clear all
 mkdir lineageimg
 load xfpdata.mat
 tcfp=400; tyfp=400; tbfp=2;
+n=input('How many fluorescent proteins in this system?');
 tred1=550;tfar1=550;
 tred2=550;tfar2=550;
 lineages = {'B','Y','1','2','3','4'};
