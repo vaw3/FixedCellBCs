@@ -50,8 +50,11 @@ impath=fullfile(pwd,'testout');
   %7 by 7 is specific for sample
   dimsx=reshape(dimsx,[7 7])';
   dimsy=reshape(dimsy,[7 7])';
+  xfpdataorig=xfpdata;
 [xfpdata]=shiftcentroid(dimsx,dimsy,xfpdata);
 save('xfpdata','xfpdata');
+save('xfpdataorig','xfpdataorig');
+
 
     
 

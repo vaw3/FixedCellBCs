@@ -6,7 +6,7 @@ z=squeeze(t);
 z=z';
 ctrs=cell2mat(z(:,1));
 color=z(:,9);
-init=color{1,1};
+% init=color{1,1};
 % colony=struct('colonyx',0,'colonyy',0);
 % colony=repmat(colony,[size(ctrs,1),1]);
 % for i=2:size(color,1)
@@ -14,8 +14,8 @@ init=color{1,1};
 %     tmp=vertcat(init,tmp);
 %     init=tmp;
 % end
-% ccode=unique(init);
-% cnum=size(ccode);
+ccode=unique(init);
+cnum=size(ccode);
 % ii=1;
 % for i=1:size(ctrs,1)
 %     index=1;
@@ -64,7 +64,7 @@ init=color{1,1};
 % t=find(cellfun(@isempty,{colony.cells}))';
 % colony(t)=[];
 % save('colonydata.mat','colony')   
-% Plotting of colonies
+%% Plotting of colonies
     figure
     col=colorcube(cnum(1,1));
     mcolor=col(find(strcmp(ccode,colony(1).barcode)),:);

@@ -115,6 +115,7 @@ function [mask2] = watershedSegmentation(mask_path, mask)
     %Erode the fused mask to find the centers of the nuclei to be segmented
     s = round(1.2*sqrt(mean(area))/pi);
     if isnan(s)
+        mask2=mask;
         return;
     end
     nucmin = imerode(fusedMask,strel('disk',s));

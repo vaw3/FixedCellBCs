@@ -95,6 +95,9 @@ end
 end
 for p=1:size(xfpdata,2)
    tmp=xfpdata(p).fid;
+   if isempty(tmp)
+       continue
+   end
    k=cellstr(tmp);
    tmp=strrep(k,' ','');
    xfpdata(p).fid=tmp;

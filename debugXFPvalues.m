@@ -1,7 +1,7 @@
 %%Debug script
 clear all
 path=pwd;
-load xfpdata.mat 
+load xfpdataorig.mat 
 %load xfpctrldata.mat
 impath=[path,filesep,'testout',filesep];
 mpath=[path,filesep,'voronoi',filesep];
@@ -12,13 +12,14 @@ mkdir(['debug',filesep,'R2'])
 mkdir(['debug',filesep,'FR2'])
 mkdir(['debug',filesep,'FP1'])
 mkdir(['debug',filesep,'FP2'])
- for p = 1:numel(dir('Ilastik'))-2% don't need to skip the first one
+ for p = 1:numel(dir('Ilastik'))-3% don't need to skip the first one
         imfn = sprintf('merge_f%04d.tif',p);
         mfn = sprintf('voronoi_f%04d.tif',p);
         imfile = [impath,imfn];
         mfile = [mpath, mfn];
         info2 = imfinfo(imfile);
         currentImage =[];
+        nucfpimg =[];
         nucfpimg(:,:,1) = imread(imfile, 1, 'Info', info2);
         nucfpimg(:,:,2) = imread(imfile, 4, 'Info', info2);
         for k= 1:2
