@@ -9,13 +9,13 @@ color=z(:,9);
 init=color{1,1};
 % colony=struct('colonyx',0,'colonyy',0);
 % colony=repmat(colony,[size(ctrs,1),1]);
-% for i=2:size(color,1)
-%     tmp=color{i,1};
-%     tmp=vertcat(init,tmp);
-%     init=tmp;
-% end
-% ccode=unique(init);
-% cnum=size(ccode);
+for i=2:size(color,1)
+    tmp=color{i,1};
+    tmp=vertcat(init,tmp);
+    init=tmp;
+end
+ccode=unique(init);
+cnum=size(ccode);
 % ii=1;
 % for i=1:size(ctrs,1)
 %     index=1;
@@ -65,30 +65,6 @@ init=color{1,1};
 % colony(t)=[];
 % save('colonydata.mat','colony')   
 % Plotting of colonies
-    figure
-    col=colorcube(cnum(1,1));
-    mcolor=col(find(strcmp(ccode,colony(1).barcode)),:);
-    scatter(colony(1).colonyx,colony(1).colonyy,'*','MarkerFaceColor',mcolor)
-    hold on
-    viscircles([colony(1).colonyx colony(1).colonyy], colony(1).maxdist,'Color',mcolor);
-for i=2:size(colony,1)/10
-    mcolor=col(find(strcmp(ccode,colony(i).barcode)),:);
-    scatter(colony(i).colonyx,colony(i).colonyy,'*','MarkerFaceColor',mcolor)
-    viscircles([colony(i).colonyx colony(i).colonyy], colony(i).maxdist,'Color',mcolor);
-end
-       hold off
-    close gcf
-        figure
-    scatter(xfpdata(1).centroid(:,1),xfpdata(1).centroid(:,2),'*','MarkerFaceColor',mcolor)
-    hold on
-    
-for i=2:size(xfpdata,2)
-    mcolor=col(find(strcmp(ccode,colony(i).barcode)),:);
-    scatter(xfpdata(1).centroid(:,1),xfpdata(1).centroid(:,2),'*','MarkerFaceColor',mcolor)
-    viscircles([colony(i).colonyx colony(i).colonyy], colony(i).maxdist,'Color',mcolor);
-end
-       hold off
-    close gcf
 
    
                 
