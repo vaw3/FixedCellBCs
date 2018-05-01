@@ -11,7 +11,7 @@ frthresh=810;
 mkdir voronoi
 mpath=fullfile(pwd,'masks');
 impath=fullfile(pwd,'testout');
-  for p = 1:numel(dir('Ilastik'))-3% don't need to skip the first one
+  for p = 1:numel(dir('Ilastik'))-2% don't need to skip the first one
         imfn = sprintf('merge_f%04d.tif',p);
         posstr=sprintf('%04d',p);
         mfn = sprintf('mask_f%04d.tif',p);

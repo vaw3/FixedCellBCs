@@ -32,7 +32,21 @@ for ii = 1:max_imgs
         imgnow2 = cat(3,imgnow2,maxIntensityLSMMontage(directory2{kk},ii));
     end
     
-    [fi,shift(ii,1),shift(ii,2)] = registerTwoImages(imgnow1,imgnow2,chans);
+    [q,shift(ii,1),shift(ii,2)] = registerTwoImages(imgnow1,imgnow2,chans);
+    %if shift(ii,1)>=0 && shift(ii,2)>=0
+        fi=margincrop(q,[abs(shift(ii,2)) abs(shift(ii,2))],[abs(shift(ii,1)) abs(shift(ii,1))]);
+%         fi(:,:,chans+1:2*chans)=margincrop(q(:,:,chans+1:2*chans),[shift(ii,2) 0],[shift(ii,1) 0]);
+%     elseif shift(ii,1)>=0 && shift(ii,2)<0
+%         fi(:,:,1:chans)=margincrop(q(:,:,1:chans),[-shift(ii,2) 0], [0 shift(ii,1)]);
+%         fi(:,:,chans+1:2*chans)=margincrop(q(:,:,chans+1:2*chans),[0 -shift(ii,2)],[shift(ii,1) 0]);
+%     elseif shift(ii,1)<0 && shift(ii,2)>=0
+%         fi(:,:,1:chans)=margincrop(q(:,:,1:chans),[0 shift(ii,2)],[-shift(ii,1) 0]);
+%         fi(:,:,chans+1:2*chans)=margincrop(q(:,:,1+chans:2*chans),[shift(ii,2) 0], [0 -shift(ii,1)]);
+%     else
+%         fi(:,:,1:chans)=margincrop(q(:,:,1:chans),[-shift(ii,2) 0],[-shift(ii,1) 0]);
+%         fi(:,:,1+chans:2*chans)=margincrop(q(:,:,1+chans:2*chans),[0 -shift(ii,2)],[0 -shift(ii,1)]);
+    %end
+         
     all_imgs{row,col}=fi;
     %all_imgs{row,col}=imgnow1;
 

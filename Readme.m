@@ -28,6 +28,9 @@ barcodes associated with each cell in xfpdata creating lineages.
 Implementation of categorical analysis of lineages underway. Finally, this
 script saves nuclearcomposite images of each position of true sample in
 lineageimg with the lineage ID printed on centroid of nucleus. 
+4b. you may always run debugxfpvalues to check thresholding.
 
-5. Run lineagehistogram and lineageanalysis
+5. Run lineagehistogram and lineageanalysis 
+
+6. Run colonyplot
 %}

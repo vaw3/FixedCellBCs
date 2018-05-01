@@ -10,18 +10,24 @@ function [xfpdata]= shiftcentroid(dimsx,dimsy,xfpdata)
     for i=1:size(dimsx,2)
         for j=1:size(dimsy,2)
           curdata=cell2mat(struct2cell(xfpdata(ct).centroid)');
+          if isempty(curdata)
+              xfpdata(ct).centroid=curdata;
+              ct=ct+1;
+              clear tmp
+              continue
+          end
           if i==1&&j==1 
-              tmp(:,1)=curdata(:,1)+tmpshift(i,j,1);
-              tmp(:,2)=curdata(:,2)+tmpshift(i,j,2);
+              tmp(:,1)=curdata(:,1);%+tmpshift(i,j,1);
+              tmp(:,2)=curdata(:,2);%+tmpshift(i,j,2);
           elseif i==1&&j>1
-              tmp(:,1)=curdata(:,1)+dims(i,j-1,1)+tmpshift(i,j,1);
-              tmp(:,2)=curdata(:,2)+tmpshift(i,j,2);
+              tmp(:,1)=curdata(:,1)+dims(i,j-1,1);%+tmpshift(i,j,1);
+              tmp(:,2)=curdata(:,2);%+tmpshift(i,j,2);
           elseif j==1&&i>1
-              tmp(:,1)=curdata(:,1)+tmpshift(i,j,1);
-              tmp(:,2)=curdata(:,2)+dims(i-1,j,2)+tmpshift(i,j,2);
+              tmp(:,1)=curdata(:,1);%+tmpshift(i,j,1);
+              tmp(:,2)=curdata(:,2)+dims(i-1,j,2);%+tmpshift(i,j,2);
           else
-              tmp(:,1)=curdata(:,1)+dims(i-1,j-1,1)+tmpshift(i,j,1);
-              tmp(:,2)=curdata(:,2)+dims(i-1,j-1,2)+tmpshift(i,j,2);
+              tmp(:,1)=curdata(:,1)+dims(i-1,j-1,1);%+tmpshift(i,j,1);
+              tmp(:,2)=curdata(:,2)+dims(i-1,j-1,2);%+tmpshift(i,j,2);
           end
           xfpdata(ct).centroid=tmp;
           clear tmp

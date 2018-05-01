@@ -3,12 +3,12 @@
 clear all
 mkdir lineageimg
 load xfpdata.mat
-tcfp=400; tyfp=400; tbfp=2;
+tcfp=600; tyfp=400; tbfp=600;
 n=input('How many fluorescent proteins in this system?');
 tred1=550;tfar1=550;
 tred2=550;tfar2=550;
-lineages = {'B','Y','1','2','3','4'};
-lineagecomb={'B','Y','1','2','3','4','N'};
+lineages = {'B','C','1','2','3','4'};
+lineagecomb={'B','C','1','2','3','4','N'};
 lineagecomb=string(lineagecomb');
 for i=2:6
 temp=string(combnk(lineages,i));
@@ -51,6 +51,11 @@ for ii=1:size(xfpdata(p).centroid,1)
             xfpdata(p).uid(ii,n)=false;
             xfpdata(p).fid(ii,n)=' ';
         end
+    end
+    if xfpdata(p).uid(ii,1)==false&&xfpdata(p).uid(ii,2)==false&&xfpdata(p).uid(ii,n)==false
+        xfpdata(p).uid(ii,3+n-2:6+n-2)=false;
+        xfpdata(p).fid(ii,3+n-2:6+n-2)=' ';
+        continue
     end
     if  cell2mat(struct2cell(xfpdata(p).r1(ii)))>tred1
         xfpdata(p).uid(ii,3+n-2)=true;
