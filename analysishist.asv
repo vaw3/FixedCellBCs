@@ -72,11 +72,7 @@ clear tmp
 subplot(2,2,1)
 h1=histogram(r1ctrl)
 subplot(2,2,2)
-histogram(r2ctrl,h1.BinEdges)
-subplot(2,2,3)
-h2=histogram(fr1ctrl)
-subplot(2,2,4)
-histogram(fr2ctrl,h2.BinEdges)
+histogram(r2ctrl)
 
 %  clear tmp;
 %  subplot(4,3,1)

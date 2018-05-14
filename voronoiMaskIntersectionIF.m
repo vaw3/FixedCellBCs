@@ -1,11 +1,11 @@
 function [new_mask] = voronoiMaskIntersectionIF (voronoi_mask, combined_mask,dil)
     cut_mask = combined_mask - (voronoi_mask == 0 & combined_mask ~= 0);
-    cut_mask = bwareaopen(cut_mask, 100);
+    cut_mask = bwareaopen(cut_mask, 10);
     %imshow(cut_mask);
     se = strel('disk', dil);
     dilate_mask = imdilate(cut_mask, se);
     new_mask = dilate_mask - (voronoi_mask == 0 & dilate_mask ~= 0);
-    new_mask = bwareaopen(new_mask, 200);
+    new_mask = bwareaopen(new_mask, 20);
     %imshow(new_mask);
     %Test sequence to make sure the number of cells countedin new_mask is
     %consistent with the numberof voronoi polygons.
